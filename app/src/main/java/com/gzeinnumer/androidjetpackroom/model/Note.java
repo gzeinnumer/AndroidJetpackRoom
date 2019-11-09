@@ -1,4 +1,4 @@
-package com.gzeinnumer.androidjetpackroom.helper;
+package com.gzeinnumer.androidjetpackroom.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

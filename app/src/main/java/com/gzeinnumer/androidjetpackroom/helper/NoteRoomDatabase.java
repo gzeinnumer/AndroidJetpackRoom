@@ -6,6 +6,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.gzeinnumer.androidjetpackroom.model.Note;
+
 //todo 3
 @Database(entities = Note.class, version = 1, exportSchema = false)
 public abstract class NoteRoomDatabase extends RoomDatabase {

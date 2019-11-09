@@ -4,27 +4,33 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.gzeinnumer.androidjetpackroom.helper.Note;
+import com.gzeinnumer.androidjetpackroom.adapter.NoteListAdapter;
+import com.gzeinnumer.androidjetpackroom.model.Note;
 import com.gzeinnumer.androidjetpackroom.viewModel.NoteViewModel;
 import com.gzeinnumer.androidjetpackroom.R;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NoteListAdapter.OnDeleteClickListener{
 
     private static final String TAG = "MainActivity";
     private static final int NEW_NOTE_ACTIVITY_REQUEST_CODE = 1;
+    public static final int UPDATE_NOTE_ACTIVITY_REQUEST_CODE = 2;
     private NoteViewModel noteViewModel;
 
+    private NoteListAdapter noteListAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +38,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        RecyclerView rv = findViewById(R.id.rv_data);
+
+        noteListAdapter = new NoteListAdapter(this, this);
         FloatingActionButton fab = findViewById(R.id.fab);
+        rv.setAdapter(noteListAdapter);
+        rv.setLayoutManager(new LinearLayoutManager(this));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+
+        noteViewModel.getAllNotesC().observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(List<Note> notes) {
+                noteListAdapter.setNotes(notes);
+            }
+        });
     }
 
     //todo 6
@@ -52,11 +70,22 @@ public class MainActivity extends AppCompatActivity {
 
             final String note_id = UUID.randomUUID().toString();
             Note note = new Note(note_id, data.getStringExtra(NewNoteActivity.NOTE_ADDED));
-            noteViewModel.insert(note);
+            noteViewModel.insertC(note);
 
             Toast.makeText(this, "Tersimpan", Toast.LENGTH_SHORT).show();
+        } else if(requestCode == UPDATE_NOTE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK){
+            Note note = new Note(
+                    data.getStringExtra(EditNoteActvity.NOTE_ID),
+                    data.getStringExtra(EditNoteActvity.UPDATE_NOTE));
+            noteViewModel.updateC(note);
+            Toast.makeText(this, "Data di updateC", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Gagal Tersimpan", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void OnDeleteClickListener(Note myNote) {
+        noteViewModel.deleteC(myNote);
     }
 }
