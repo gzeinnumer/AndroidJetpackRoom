@@ -63,7 +63,6 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static AppDatabase getInstance(Context context) {
         return Room.databaseBuilder(context,AppDatabase.class, dbName)
-                .createFromFile(folder)
                 .allowMainThreadQueries()
                 .build();
     }
