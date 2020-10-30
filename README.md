@@ -3,17 +3,12 @@
 
 - [Room](https://developer.android.com/training/data-storage/room)
 
-
+Start Room
 - Add dependencies
 ```gradle
-def lifecycler_version = "1.1.1"
-implementation "android.arch.lifecycle:extensions:$lifecycler_version"
-annotationProcessor "android.arch.lifecycle:compiler:$lifecycler_version"
-
-def room_version = "1.1.1"
+def room_version = "2.2.5"
 implementation "android.arch.persistence.room:runtime:$room_version"
 annotationProcessor "android.arch.persistence.room:compiler:$room_version"
-androidTestImplementation "android.arch.persistence.room:testing:$room_version"
 ```
 
 - SampleTable
